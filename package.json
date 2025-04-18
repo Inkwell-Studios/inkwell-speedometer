@@ -1,0 +1,19 @@
+{
+  "name": "fivem-react-nui-template",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "web"
+  ],
+  "scripts": {
+    "build": "cd web && npm run build",
+    "build:game": "echo 'No build step needed for game scripts'",
+    "dev": "concurrently \"cd web && npm run dev\" \"npm run watch:game\"",
+    "watch:game": "nodemon --watch client --watch server --watch shared --ext js,lua",
+    "postinstall": "cd web && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.3"
+  }
+} 

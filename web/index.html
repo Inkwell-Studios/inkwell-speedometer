@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FiveM React NUI</title>
+    <style>
+      /* Base styles for FiveM NUI */
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        /* Make background transparent by default */
+        background: transparent !important;
+        /* Disable text selection */
+        user-select: none;
+      }
+      
+      /* Hide scrollbars but keep functionality */
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html> 
