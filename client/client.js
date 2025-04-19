@@ -33,6 +33,26 @@ RegisterNuiCallback('devTestMessage', (data, cb) => {
   cb({ received: true, timestamp: data.timestamp })
 })
 
+// Handle rate limit responses from server
+onNet('inkwell-react-template:rateLimitResponse', (response) => {
+  // Ensure response is properly formatted before sending to NUI
+  const message = {
+    type: 'rateLimitResponse',
+    data: {
+      actionId: response.actionId,
+      allowed: response.allowed
+    }
+  }
+  SendNuiMessage(JSON.stringify(message))
+})
+
+// Handle rate limit check requests from NUI
+RegisterNuiCallback('checkRateLimit', (data, cb) => {
+  const { actionId, cooldown } = data
+  emitNet('inkwell-react-template:checkRateLimit', actionId, cooldown)
+  cb({})
+})
+
 // Example command to toggle UI
 RegisterCommand('toggleui', () => {
   if (!nuiReady) {
@@ -64,19 +84,4 @@ onNet('inkwell-react-template:updateFromServer', (data) => {
     type: 'updateFromServer',
     data
   }))
-})
-
-// Handle rate limit responses from server
-onNet('inkwell-react-template:rateLimitResponse', (actionId, allowed) => {
-  SendNuiMessage(JSON.stringify({
-    type: 'rateLimitResponse',
-    data: { actionId, allowed }
-  }))
-})
-
-// Handle rate limit check requests from NUI
-RegisterNuiCallback('checkRateLimit', (data, cb) => {
-  const { actionId, cooldown } = data
-  emitNet('inkwell-react-template:checkRateLimit', actionId, cooldown)
-  cb({})
 }) 

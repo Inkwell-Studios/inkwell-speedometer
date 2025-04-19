@@ -7,6 +7,7 @@ export const useNuiState = create((set, get) => ({
   visible: false,
   uiReady: false,
   lastMessage: null,
+  rateLimitResponses: new Map(), // Store rate limit responses
 
   // Action to set visibility
   setVisible: (visible) => {
@@ -16,6 +17,13 @@ export const useNuiState = create((set, get) => ({
   // Action to mark UI as ready
   setUiReady: (ready) => {
     set({ uiReady: ready })
+  },
+
+  // Action to handle rate limit response
+  handleRateLimitResponse: (actionId, allowed) => {
+    set((state) => ({
+      rateLimitResponses: new Map(state.rateLimitResponses).set(actionId, allowed)
+    }))
   },
 
   // Action to handle incoming NUI messages
@@ -32,6 +40,9 @@ export const useNuiState = create((set, get) => ({
         } else {
           console.log('[NUI Store] Ignoring setVisible in DEV mode (use DevTools)')
         }
+        break
+      case 'rateLimitResponse':
+        get().handleRateLimitResponse(data.actionId, data.allowed)
         break
       // Add more message type handlers here as needed
       default:

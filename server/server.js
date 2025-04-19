@@ -56,13 +56,20 @@ const setRateLimit = (userId, actionId, cooldown) => {
 // Handle rate limit check requests from clients
 onNet('inkwell-react-template:checkRateLimit', (actionId, cooldown) => {
   const src = source
-  const userId = GetPlayerIdentifiers(src)[0] // Get player's identifier
+  // Use the player's source as their ID since it's unique per session
+  const userId = src.toString()
 
   if (isRateLimited(userId, actionId)) {
-    emitNet('inkwell-react-template:rateLimitResponse', src, actionId, false)
+    emitNet('inkwell-react-template:rateLimitResponse', src, {
+      actionId,
+      allowed: false
+    })
     return
   }
 
   setRateLimit(userId, actionId, cooldown)
-  emitNet('inkwell-react-template:rateLimitResponse', src, actionId, true)
+  emitNet('inkwell-react-template:rateLimitResponse', src, {
+    actionId,
+    allowed: true
+  })
 }) 

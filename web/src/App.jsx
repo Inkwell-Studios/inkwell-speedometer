@@ -18,7 +18,11 @@ export default function App() {
   const cardRef = useRef(null)
 
   // Rate limit setup for primary action (2 seconds)
-  const { isRateLimited: isPrimaryActionLimited, performAction: performPrimaryAction } = useRateLimit('primaryAction', 2000)
+  const { 
+    isRateLimited: isPrimaryActionLimited, 
+    performAction: performPrimaryAction,
+    rateLimitMessage: primaryActionMessage
+  } = useRateLimit('primaryAction', 2000)
 
   // Make the card draggable once it's mounted
   useEffect(() => {
@@ -92,7 +96,6 @@ export default function App() {
                       performPrimaryAction(() => {
                         const message = `${label} was clicked!`
                         setLastAction(message)
-                        sendMessage('buttonClicked', { message })
                       })
                     }}
                   >
@@ -122,13 +125,17 @@ export default function App() {
             })}
           </div>
 
-          {lastAction && (
-            <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10">
-              <p className="text-sm text-white/80">
-                Last Action: {lastAction}
-              </p>
-            </div>
-          )}
+          <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10 min-h-[44px] flex items-center">
+            <p className="text-sm text-white/80">
+              {primaryActionMessage ? (
+                <span className="text-yellow-400">{primaryActionMessage}</span>
+              ) : lastAction ? (
+                `Last Action: ${lastAction}`
+              ) : (
+                <span className="opacity-60">No actions performed yet.</span>
+              )}
+            </p>
+          </div>
         </CardContent>
 
         <CardFooter className="flex justify-between items-center">
