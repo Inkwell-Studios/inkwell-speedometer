@@ -57,16 +57,19 @@ export function NuiProvider({ children }) {
 
   // Effect to handle NUI messages from the game client
   useEffect(() => {
-    window.addEventListener('message', handleNuiMessage)
+    const messageHandler = (event) => {
+        handleNuiMessage(event);
+    };
+    window.addEventListener('message', messageHandler);
 
     // Notify client that UI is ready
-    sendMessage('uiReady')
-    setUiReady(true) // Mark UI as ready in the store
+    sendMessage('uiReady');
+    setUiReady(true); // Mark UI as ready in the store
 
     return () => {
-      window.removeEventListener('message', handleNuiMessage)
-    }
-  }, [sendMessage, handleNuiMessage, setUiReady])
+      window.removeEventListener('message', messageHandler);
+    };
+  }, [sendMessage, handleNuiMessage, setUiReady]);
 
   // Effect to handle ESC key press for hiding the frame
   useEffect(() => {

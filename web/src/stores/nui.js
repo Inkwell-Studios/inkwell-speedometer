@@ -34,9 +34,10 @@ export const useNuiState = create((set, get) => ({
     switch (type) {
       case 'setVisible':
         // Only allow game to control visibility if not in dev mode
-        // In dev mode, the DevTools component will control visibility directly
         if (!import.meta.env.DEV) {
-          get().setVisible(data)
+          // Data directly contains the boolean value based on logs
+          const newVisibility = !!data; // Ensure it's a boolean
+          get().setVisible(newVisibility);
         } else {
           console.log('[NUI Store] Ignoring setVisible in DEV mode (use DevTools)')
         }
@@ -44,9 +45,23 @@ export const useNuiState = create((set, get) => ({
       case 'rateLimitResponse':
         get().handleRateLimitResponse(data.actionId, data.allowed)
         break
+      case 'updateVehicleData':
+        // Intentionally ignored by the central store
+        // This message is handled locally by the Speedometer component
+        // Adding this case prevents the "Unhandled message type" warning
+        break;
       // Add more message type handlers here as needed
       default:
-        console.warn(`[NUI Store] Unhandled message type: ${type}`)
+        // Check if it's a simple visibility toggle without a type (legacy support?)
+        if (typeof event.data === 'boolean') {
+            console.log(`[NUI Store] Detected boolean data, setting visibility: ${event.data}`);
+            get().setVisible(event.data)
+        } else {
+            // Only warn if it's not an undefined type (which happens sometimes)
+            if (type !== undefined) {
+                console.warn(`[NUI Store] Unhandled message type in default: ${type}`)
+            }
+        }
         break
     }
   },

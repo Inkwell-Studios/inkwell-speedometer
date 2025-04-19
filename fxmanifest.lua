@@ -15,7 +15,8 @@ shared_scripts {
 
 -- Client Scripts
 client_scripts {
-    'client/*.js'
+    'client/*.js',
+    'client/*.lua'
 }
 
 -- Server Scripts
